@@ -18,16 +18,17 @@ func NewEmployeeController() *EmployeeController {
 }
 
 func (em *EmployeeController) FindAll(c *gin.Context) {
-	var Employees []model.Employee
+	var employees []model.Employee
 
-	if err := database.DB.Find(&Employees).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find users"})
+	if err := database.DB.Find(&employees).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed to find employees",
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status": "OK",
-		"data":   Employees,
+		"data":   employees,
 	})
 }
 
@@ -35,7 +36,7 @@ func (em *EmployeeController) FindById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid employee id",
+			"message": "invalid employee id",
 		})
 		return
 	}
@@ -49,8 +50,7 @@ func (em *EmployeeController) FindById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status": "OK",
-		"data":   employee,
+		"data" : employee,
 	})
 }
 
@@ -61,31 +61,30 @@ func (em *EmployeeController) Create(c *gin.Context) {
 
 		errFields := validation.GetErrMess(err)
 
-		c.JSON(http.StatusBadRequest, gin.H{
-			"errors": errFields,
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"message": errFields,
 		})
 		return
 
 	}
 
 	employee := model.Employee{
-		Name: employeeInput.Name,
-		Email: employeeInput.Email,
+		Name:    employeeInput.Name,
+		Email:   employeeInput.Email,
 		Address: employeeInput.Address,
-		Phone: employeeInput.Phone,
-		Gender: model.Gender(employeeInput.Gender),
+		Phone:   employeeInput.Phone,
+		Gender:  model.Gender(employeeInput.Gender),
 	}
 
 	if err := database.DB.Create(&employee).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to create user",
+			"message": "Failed to create user",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"success": "Created",
-		"data":    employee,
+		"data" : employee,
 	})
 }
 
@@ -94,7 +93,7 @@ func (em *EmployeeController) Update(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid employee id",
+			"message": "invalid employee id",
 		})
 		return
 	}
@@ -110,8 +109,8 @@ func (em *EmployeeController) Update(c *gin.Context) {
 	var employeeInput inputs.EmployeeInput
 	if err := c.ShouldBind(&employeeInput); err != nil {
 		errFields := validation.GetErrMess(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"errors": errFields,
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"message": errFields,
 		})
 		return
 	}
@@ -122,16 +121,14 @@ func (em *EmployeeController) Update(c *gin.Context) {
 	employee.Phone = employeeInput.Phone
 	employee.Gender = model.Gender(employeeInput.Gender)
 
-
 	if err := database.DB.Save(&employee).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to update employee",
+			"message": "failed to update employee",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status": "Updated",
 		"data":   employee,
 	})
 }
@@ -141,7 +138,7 @@ func (em *EmployeeController) Delete(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid employee id",
+			"message": "invalid employee id",
 		})
 		return
 	}
@@ -156,13 +153,12 @@ func (em *EmployeeController) Delete(c *gin.Context) {
 
 	if err := database.DB.Delete(&employee).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to delete employee",
+			"message": "failed to delete employee",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":  "OK",
 		"message": "employee deleted successfully",
 	})
 }
