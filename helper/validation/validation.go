@@ -67,6 +67,8 @@ func GetErrMess(err error) map[string]string {
 				errFields[errField.Field()] = fmt.Sprintf("%s must be male or female", errField.Field())
 			case "uniqueMail":
 				errFields[errField.Field()] = fmt.Sprintf("%s already taken", errField.Field())
+			case "numeric":
+				errFields[errField.Field()] = fmt.Sprintf("%s must be numeric", errField.Field())
 			default:
 				errFields[errField.Field()] = fmt.Sprintf("%s is not valid", errField.Field())
 			}
