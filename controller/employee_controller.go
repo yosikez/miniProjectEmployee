@@ -3,7 +3,6 @@ package controller
 import (
 	"miniProject/database"
 	"miniProject/helper/validation"
-	"miniProject/inputs"
 	"miniProject/model"
 	"net/http"
 	"strconv"
@@ -55,9 +54,9 @@ func (em *EmployeeController) FindById(c *gin.Context) {
 }
 
 func (em *EmployeeController) Create(c *gin.Context) {
-	var employeeInput inputs.EmployeeInput
+	var employee model.Employee
 
-	if err := c.ShouldBind(&employeeInput); err != nil {
+	if err := c.ShouldBind(&employee); err != nil {
 
 		errFields := validation.GetErrMess(err)
 
@@ -66,14 +65,6 @@ func (em *EmployeeController) Create(c *gin.Context) {
 		})
 		return
 
-	}
-
-	employee := model.Employee{
-		Name:    employeeInput.Name,
-		Email:   employeeInput.Email,
-		Address: employeeInput.Address,
-		Phone:   employeeInput.Phone,
-		Gender:  model.Gender(employeeInput.Gender),
 	}
 
 	if err := database.DB.Create(&employee).Error; err != nil {
@@ -106,21 +97,14 @@ func (em *EmployeeController) Update(c *gin.Context) {
 		return
 	}
 
-	var employeeInput inputs.EmployeeInput
-	if err := c.ShouldBind(&employeeInput); err != nil {
+	if err := c.ShouldBind(&employee); err != nil {
 		errFields := validation.GetErrMess(err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"message": errFields,
 		})
 		return
 	}
-
-	employee.Name = employeeInput.Name
-	employee.Email = employeeInput.Email
-	employee.Address = employeeInput.Address
-	employee.Phone = employeeInput.Phone
-	employee.Gender = model.Gender(employeeInput.Gender)
-
+	
 	if err := database.DB.Save(&employee).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "failed to update employee",
