@@ -26,5 +26,5 @@ func main() {
 		log.Fatalf("Failed to start the server: %v", err)
 	}
 
-	fmt.Println("Server started on port 8080")
+	fmt.Println("Server started on port 8000")
 }
