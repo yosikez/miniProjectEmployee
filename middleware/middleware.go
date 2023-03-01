@@ -20,21 +20,22 @@ func JsonValid() gin.HandlerFunc {
 			Phone     interface{}
 			Gender    interface{}
 		}
-		var ne temp 
+		var tempVal temp 
 		data, err := c.GetRawData()
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error" : err.Error(),
+				"message" : "failed get data",
 			})
 			c.Abort()
 			return
 		}
 
 		if data != nil {
-			errrs := make(map[string]string)
+			errors := make(map[string]string)
 
-			err := json.Unmarshal(data, &ne)
+			err := json.Unmarshal(data, &tempVal)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"error" : err.Error(),
@@ -45,21 +46,22 @@ func JsonValid() gin.HandlerFunc {
 			}
 
 			mapTemp := make(map[string]interface{})
-			mapTemp["name"] = ne.Name
-			mapTemp["email"] = ne.Email
-			mapTemp["address"] = ne.Address
-			mapTemp["phone"] = ne.Phone
-			mapTemp["gender"] = ne.Gender
+			mapTemp["name"] = tempVal.Name
+			mapTemp["email"] = tempVal.Email
+			mapTemp["address"] = tempVal.Address
+			mapTemp["phone"] = tempVal.Phone
+			mapTemp["gender"] = tempVal.Gender
 
 			for key, value := range mapTemp {
 				if reflect.TypeOf(value).Kind() != reflect.String {
-					errrs[key] = fmt.Sprintf("Invalid type. Expected string but got %T", value)
+					errors[key] = fmt.Sprintf("invalid type. Expected string but got %T", value)
 				}
 			}
 			
-			if len(errrs) > 0 {
+			if len(errors) > 0 {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error": errrs,
+					"error": errors,
+					"message" : "invalid data type",
 				})
 				c.Abort()
 				return
