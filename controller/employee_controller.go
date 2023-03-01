@@ -1,6 +1,7 @@
 package controller
 
 import (
+	// "encoding/json"
 	"fmt"
 	"miniProject/database"
 	"miniProject/helper/validation"
@@ -70,8 +71,7 @@ func (em *EmployeeController) FindById(c *gin.Context) {
 func (em *EmployeeController) Create(c *gin.Context) {
 	var employee model.Employee
 
-	if err := c.ShouldBind(&employee); err != nil {
-
+	if err := c.ShouldBindJSON(&employee); err != nil {
 		errFields := validation.GetErrMess(err)
 
 		c.JSON(http.StatusUnprocessableEntity, gin.H{

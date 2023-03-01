@@ -2,6 +2,7 @@ package router
 
 import (
 	"miniProject/controller"
+	"miniProject/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,8 +13,8 @@ func RegisterRouter(router *gin.Engine){
 
 	router.GET("/employees", employeeController.FindAll)
 	router.GET("/employees/:id", employeeController.FindById)
-	router.POST("/employees", employeeController.Create)
-	router.PUT("/employees/:id", employeeController.Update)
+	router.POST("/employees", middleware.JsonValid(), employeeController.Create)
+	router.PUT("/employees/:id", middleware.JsonValid(), employeeController.Update)
 	router.DELETE("/employees/:id", employeeController.Delete)
 
 }
