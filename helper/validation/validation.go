@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"miniProject/database"
@@ -72,6 +73,13 @@ func GetErrMess(err error) map[string]string {
 			default:
 				errFields[errField.Field()] = fmt.Sprintf("%s is not valid", errField.Field())
 			}
+		}
+	} else {
+		var unmarshalErr *json.UnmarshalTypeError
+		if errors.As(err, &unmarshalErr) {
+			errFields[unmarshalErr.Field] = fmt.Sprintf("Invalid type. Expected %v but got %v", unmarshalErr.Type, unmarshalErr.Value)
+		} else {
+			errFields["input"] = err.Error()
 		}
 	}
 

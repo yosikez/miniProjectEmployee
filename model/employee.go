@@ -19,9 +19,13 @@ type Employee struct {
 	Email     string    `gorm:"type:varchar(100);unique" json:"email" binding:"required,email,uniqueMail"`
 	Address   string    `gorm:"type:text" json:"address" binding:"required,max=100"`
 	Phone     string    `gorm:"type:varchar(13)" json:"phone" binding:"required,max=13,min=10,numeric"`
-	Gender    Gender    `gorm:"type:enum('male','female');enum:'male,female'" json:"gender" binding:"required,gender"`
+	Gender    Gender    `gorm:"type:Gender" json:"gender" binding:"required,gender"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func (em *Employee) GenderChoices() []string {
+    return []string{"male", "female"}
 }
 
 func (em *Employee) BeforeCreate(tx *gorm.DB) error {

@@ -14,10 +14,12 @@ type DatabaseConfig struct {
 	Username string
 	Password string
 	Name     string
+	SSLMode  string
+	TimeZone string
 }
 
 func (c *DatabaseConfig) DSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local", c.Username, c.Password, c.Host, c.Port, c.Name)
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s  sslmode=%s TimeZone=%s", c.Host, c.Username, c.Password, c.Name, c.Port, c.SSLMode, c.TimeZone)
 }
 
 func LoadDatabase() (*DatabaseConfig, error) {
@@ -34,6 +36,8 @@ func LoadDatabase() (*DatabaseConfig, error) {
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 		Name:     os.Getenv("DB_NAME"),
+		SSLMode:  os.Getenv("DB_SSLMODE"),
+		TimeZone: os.Getenv("DB_TIMEZONE"),
 	}
 
 	return dbConfig, nil
