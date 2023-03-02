@@ -34,7 +34,7 @@ func Connect() error {
 }
 
 func migrate() error {
-	if err := DB.AutoMigrate(&model.Employee{}); err != nil {
+	if err := DB.AutoMigrate(&model.Employee{}, &model.Opportunity{}); err != nil {
 		return err
 	}
 

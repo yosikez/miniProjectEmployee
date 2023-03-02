@@ -5,7 +5,6 @@ import (
 	"log"
 	"miniProject/database"
 	"miniProject/helper/validation"
-	// "miniProject/middleware"
 	"miniProject/router"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +17,7 @@ func main() {
 	}
 
 	r := gin.Default()
-	// r.Use(middleware.JsonValid())
+	
 	router.RegisterRouter(r)
 	
 	validation.RegisterCustomValidator()
