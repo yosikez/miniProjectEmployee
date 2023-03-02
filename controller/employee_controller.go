@@ -75,7 +75,7 @@ func (em *EmployeeController) Create(c *gin.Context) {
 
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"message": "validation error",
-			"error": errFields,
+			"errors": errFields,
 		})
 		return
 

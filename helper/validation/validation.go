@@ -5,7 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"miniProject/database"
+	"miniProject/helper"
+	"miniProject/input"
 	"miniProject/model"
+	"reflect"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
@@ -55,25 +58,39 @@ func GetErrMess(err error) map[string]string {
 
 	if errors.As(err, &errs) {
 		for _, errField := range errs {
+			var field, disField string
+
+			mapStr, isTrue := helper.CheckDiveField(errField)
+
+			if isTrue {
+				field = fmt.Sprintf("%s.%s.%s", mapStr["field"], mapStr["index"], mapStr["attribute"])
+				disField = mapStr["attribute"]
+			} else {
+				structField, _ :=  reflect.TypeOf(input.JsonDataOpportunity{}).FieldByName(errField.Field())
+				field = helper.GetJSONTagName(structField)
+				disField = field
+			}
+
+
 			switch errField.Tag() {
 			case "required":
-				errFields[errField.Field()] = fmt.Sprintf("%s is required", errField.Field())
+				errFields[field] = fmt.Sprintf("%s is required", disField)
 			case "email":
-				errFields[errField.Field()] = fmt.Sprintf("%s is not a valid email address", errField.Field())
+				errFields[field] = fmt.Sprintf("%s is not a valid email address", disField)
 			case "min":
-				errFields[errField.Field()] = fmt.Sprintf("%s must be at least %s characters/nums long", errField.Field(), errField.Param())
+				errFields[field] = fmt.Sprintf("%s must be at least %s characters/nums long", disField, errField.Param())
 			case "max":
-				errFields[errField.Field()] = fmt.Sprintf("%s must be at most %s characters/nums long", errField.Field(), errField.Param())
+				errFields[field] = fmt.Sprintf("%s must be at most %s characters/nums long", disField, errField.Param())
 			case "gender":
-				errFields[errField.Field()] = fmt.Sprintf("%s must be male or female", errField.Field())
+				errFields[field] = fmt.Sprintf("%s must be male or female", disField)
 			case "uniqueMail":
-				errFields[errField.Field()] = fmt.Sprintf("%s already taken", errField.Field())
+				errFields[field] = fmt.Sprintf("%s already taken", disField)
 			case "numeric":
-				errFields[errField.Field()] = fmt.Sprintf("%s must be numeric", errField.Field())
+				errFields[field] = fmt.Sprintf("%s must be numeric", disField)
 			case "datetime":
-				errFields[errField.Field()] = fmt.Sprintf("%s format must be yyyy-mm-dd hh:mm:ss", errField.Field())
+				errFields[field] = fmt.Sprintf("%s format must be yyyy-mm-dd hh:mm:ss", disField)
 			default:
-				errFields[errField.Field()] = fmt.Sprintf("%s is not valid", errField.Field())
+				errFields[field] = fmt.Sprintf("%s is not valid", disField)
 			}
 		}
 	} else {

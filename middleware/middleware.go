@@ -62,7 +62,7 @@ func JsonValidEmp() gin.HandlerFunc {
 
 			if len(errors) > 0 {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error":   errors,
+					"errors":   errors,
 					"message": "invalid data type",
 				})
 				c.Abort()
@@ -172,7 +172,7 @@ func JsonValidOpportunity() gin.HandlerFunc {
 			}
 			if len(errors) > 0 {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error":   errors,
+					"errors":   errors,
 					"message": "invalid data type",
 				})
 				c.Abort()
