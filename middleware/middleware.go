@@ -55,8 +55,10 @@ func JsonValidEmp() gin.HandlerFunc {
 			mapTemp["gender"] = tempVal.Gender
 
 			for key, value := range mapTemp {
-				if reflect.TypeOf(value).Kind() != reflect.String {
-					errors[key] = fmt.Sprintf("invalid type. Expected string but got %T", value)
+				if value != nil {
+					if reflect.TypeOf(value).Kind() != reflect.String {
+						errors[key] = fmt.Sprintf("invalid type. Expected string but got %T", value)
+					}
 				}
 			}
 
@@ -128,11 +130,13 @@ func JsonValidOpportunity() gin.HandlerFunc {
 			delete(mapTemp, "resources")
 
 			for key, value := range mapTemp {
-				if reflect.TypeOf(value).Kind() != reflect.String {
-					if reflect.TypeOf(value).Kind() == reflect.Float64 {
-						errors[key] = "invalid type. Expected string but got number"
-					} else {
-						errors[key] = fmt.Sprintf("invalid type. Expected string but got %T", value)
+				if value != nil {
+					if reflect.TypeOf(value).Kind() != reflect.String {
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							errors[key] = "invalid type. Expected string but got number"
+						} else {
+							errors[key] = fmt.Sprintf("invalid type. Expected string but got %T", value)
+						}
 					}
 				}
 			}
