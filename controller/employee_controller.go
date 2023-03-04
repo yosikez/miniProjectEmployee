@@ -3,11 +3,11 @@ package controller
 import (
 	"fmt"
 	"miniProject/database"
-	"miniProject/helper/validation"
 	"miniProject/model"
 	"net/http"
 	"strconv"
 
+	cusMessage "github.com/yosikez/custom-error-message"
 	"github.com/gin-gonic/gin"
 )
 
@@ -71,7 +71,7 @@ func (em *EmployeeController) Create(c *gin.Context) {
 	var employee model.Employee
 
 	if err := c.ShouldBindJSON(&employee); err != nil {
-		errFields := validation.GetErrMess(err)
+		errFields := cusMessage.GetErrMess(err, employee, nil)
 
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"message": "validation error",
@@ -115,7 +115,7 @@ func (em *EmployeeController) Update(c *gin.Context) {
 	}
 
 	if err := c.ShouldBind(&employee); err != nil {
-		errFields := validation.GetErrMess(err)
+		errFields := cusMessage.GetErrMess(err, employee, nil)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"message": "validation error",
 			"error": errFields,

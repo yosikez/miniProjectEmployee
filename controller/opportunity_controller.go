@@ -3,11 +3,11 @@ package controller
 import (
 	"encoding/json"
 	"miniProject/database"
-	"miniProject/helper/validation"
 	"miniProject/input"
 	"miniProject/model"
 	"net/http"
 
+	cusMessage "github.com/yosikez/custom-error-message"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +21,7 @@ func (op *OpportunityController) Create(c *gin.Context) {
 	var opportunity input.JsonDataOpportunity
 
 	if err := c.ShouldBind(&opportunity); err != nil {
-		errFields := validation.GetErrMess(err)
+		errFields := cusMessage.GetErrMess(err, opportunity, input.Resource{})
 
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"message": "validation error",
@@ -51,6 +51,6 @@ func (op *OpportunityController) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"data": opportunity,
+		"data": modelData,
 	})
 }
