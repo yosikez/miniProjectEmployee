@@ -7,6 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/joho/godotenv v1.5.1
+	github.com/rabbitmq/amqp091-go v1.7.0
 	github.com/yosikez/custom-error-message v1.0.2
 	gorm.io/datatypes v1.1.0
 	gorm.io/driver/mysql v1.4.7

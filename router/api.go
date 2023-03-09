@@ -1,16 +1,17 @@
 package router
 
 import (
+	"miniProject/config"
 	"miniProject/controller"
 	"miniProject/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRouter(router *gin.Engine){
-	
+func RegisterRouter(router *gin.Engine, rmq *config.RabbitMQConnection, rmqCfg *config.RabbitMQ) {
+
 	employeeController := controller.NewEmployeeController()
-	opportunityController := controller.NewOpportunityController()
+	opportunityController := controller.NewOpportunityController(rmq, rmqCfg)
 
 	router.GET("/employees", employeeController.FindAll)
 	router.GET("/employees/:id", employeeController.FindById)
